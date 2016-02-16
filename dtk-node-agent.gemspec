@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{The DTK Node Agent runs on your nodes that you wish to manage using your DTK Server.  It comes pre-installed on all nodes created/managed by hosted DTK Server accounts.}
   gem.summary       = %q{DTK Node Agent gem.}
   gem.homepage      = "https://github.com/rich-reactor8/dtk-node-agent"
-  gem.licenses      = ["GPL-3.0"]
+  gem.licenses      = ["Apache-2.0"]
 
   gem.files = %w(README.md Gemfile Gemfile.lock dtk-node-agent.gemspec)
   gem.files += Dir.glob("bin/**/*")
