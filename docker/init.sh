@@ -3,7 +3,11 @@
 . /host_volume/dtk.config
 
 GIT_PORT=${GIT_PORT-2222}
+if [[ -z $GIT_USERNAME ]]; then
+  GIT_USERNAME=$USERNAME
+fi
 PBUILDERID=${PBUILDERID-docker-executor}
+
 
 cat << EOF > /etc/dtk/arbiter.cfg
 stomp_url = ${PUBLIC_ADDRESS}
@@ -12,7 +16,7 @@ stomp_username = ${USERNAME}
 stomp_password = ${STOMP_PASSWORD}
 arbiter_topic = /topic/arbiter.${USERNAME}.broadcast
 arbiter_queue = /queue/arbiter.${USERNAME}.reply
-git_server = "ssh://${USERNAME}@${PUBLIC_ADDRESS}:${GIT_PORT}"
+git_server = "ssh://${GIT_USERNAME}@${PUBLIC_ADDRESS}:${GIT_PORT}"
 pbuilderid = ${PBUILDERID}
 private_key = /host_volume/arbiter/arbiter_remote
 EOF
