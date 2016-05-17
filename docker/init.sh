@@ -9,7 +9,7 @@ fi
 PBUILDERID=${PBUILDERID-docker-executor}
 PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME-arbiter_remote}
 
-
+if [[ "$SKIP_CONFIG" != true ]]; then
 cat << EOF > /etc/dtk/arbiter.cfg
 stomp_url = ${PUBLIC_ADDRESS}
 stomp_port = 6163
@@ -21,5 +21,6 @@ git_server = "ssh://${GIT_USERNAME}@${PUBLIC_ADDRESS}:${GIT_PORT}"
 pbuilderid = ${PBUILDERID}
 private_key = /host_volume/arbiter/arbiter_remote
 EOF
+fi
 
 /opt/puppet-omnibus/embedded/bin/ruby start.rb --foreground
