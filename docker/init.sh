@@ -7,6 +7,7 @@ if [[ -z $GIT_USERNAME ]]; then
   GIT_USERNAME=$USERNAME
 fi
 PBUILDERID=${PBUILDERID-docker-executor}
+PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME-arbiter_remote}
 
 
 cat << EOF > /etc/dtk/arbiter.cfg
