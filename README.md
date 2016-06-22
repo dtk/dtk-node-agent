@@ -26,11 +26,13 @@ packer build template.json
 ```  
 This will also copy images to all AWS regions.  
 
-To get json output of new images, first, add .fog file on your home directory (with valid aws credentials) and then run following ruby script:
+To get yaml output of new images, first, add .fog file on your home directory (with valid aws credentials) and then run following ruby script:
 ```
 ruby get_amis.rb <AMI_TIMESTAMPS>
 ```
 AMI_TIMESTAMPS can be one timestamp or array of timestamps separated with delimiter (,)
+
+Note: Output of get_amis.rb script execution needs to be pasted instead of the old dtk.model.yaml inside aws:image_aws component module. Change needs to be pushed to server then and also to repo manager so everyone has access to new aws images
 
 ## License
 
