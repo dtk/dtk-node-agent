@@ -2,63 +2,69 @@
 
 require 'fog'
 require 'ap'
-require 'json'
+require 'yaml'
 
-regions = [ "us-east-1", "us-west-1", "us-west-2", "eu-west-1", "ap-southeast-1", "ap-southeast-2", "ap-northeast-1", "sa-east-1"]
+regions = [ "us-east-1", "us-west-1", "us-west-2", "eu-west-1"]
 
 raise ArgumentError, "You must specify timestamp argument" if ARGV[0].nil?
 ts_filter = ARGV[0].split(",")
 
-list = Hash.new
-list[:nodes_info] = Hash.new
+module_hash = {
+  'module' => 'image_aws',
+  'dsl_version' => '1.0.0',
+  'components' => {
+    'image_aws' => { 
+      'attributes' => { 
+        'images' => { 
+          'description' => 'Mapping of logical image names to amis', 
+          'type' => 'hash', 
+          'hidden' => true,
+          'default' => {}
+        }
+      }
+    }
+  }
+}
 
 resolver = {
-	'saucy' => 'ubuntu',
   'trusty' => 'ubuntu',
 	'trusty_hvm' => 'ubuntu',
   'precise' => 'ubuntu',
 	'precise_hvm' => 'ubuntu',
-	'lucid' => 'ubuntu',
   'wheezy' => 'debian',
 	'wheezy_hvm' => 'debian',
-	'centos64' => 'centos',
-  'centos6' => 'centos',
-	'centos6_hvm' => 'centos',
-	'rhel64' => 'redhat',
   'rhel6_hvm' => 'redhat',
 	'rhel6' => 'redhat',
 	'amazon' => 'amazon-linux',
 	'amazon_hvm' => 'amazon-linux'
 }
 
+region_names = Hash.new
 regions.each do |region|
-    fog = Fog::Compute.new({:provider => 'AWS', :region => region})
-    fog.describe_images('Owner' => 'self').body["imagesSet"].each do |i|
-      next unless ts_filter.any? { |w| i['name'] =~ /#{w}/ }
-    	i['name'] =~ /dtk\-agent\-([a-zA-Z0-9_]*)\-([0-9]{10})/
-        if $1 && !$2.strip.empty?
-	        raise "Missing mapping #{$1}  2: #{$2}" unless resolver[$1.downcase]
-          unless $1.include? 'hvm'
-            sizes = ["t1.micro","m1.small","m3.medium"] 
-          else 
-            sizes = ["t2.micro","t2.small","t2.medium"] 
+  image_names = Hash.new
+  fog = Fog::Compute.new({:provider => 'AWS', :region => region})
+  fog.describe_images('Owner' => 'self').body["imagesSet"].each do |i|
+    next unless ts_filter.any? { |w| i['name'] =~ /#{w}/ }
+  	i['name'] =~ /dtk\-agent\-([a-zA-Z0-9_]*)\-([0-9]{10})/
+      if $1 && !$2.strip.empty?
+        raise "Missing mapping #{$1}  2: #{$2}" unless resolver[$1.downcase]
+        unless $1.include? 'hvm'
+          sizes = { 'micro' => "t1.micro", 'small' => "m1.small",'medium' => "m3.medium" }
+        else 
+          if $1 == 'amazon_hvm'
+            sizes = { 'large' => "m4.large", 'micro' => "t2.micro", 'small' => "t2.small", 'medium' => "t2.medium" }
+          else  
+            sizes = { 'micro' => "t2.micro", 'small' => "t2.small", 'medium' => "t2.medium" }
           end
-		    	list[:nodes_info].store(
-		    		i['imageId'],
-		    		{
-		    			'region' => region,
-		    			'type' => $1,
-		    			'os_type' => resolver[$1.downcase],
-		    			'display_name' => $1.capitalize,
-		    			'png' => "#{$1}.png",
-		    			'sizes' => sizes
-		    		}
-		    	) 
-        else
-        	puts "Your skipped #{i['name']} with 1: #{$1} 2: #{$2}"
         end
-    end
+        image_names[$1] = {"ami"=>i['imageId'], "os_type"=>resolver[$1.downcase], "sizes"=>sizes}
+      else
+      	puts "Your skipped #{i['name']} with 1: #{$1} 2: #{$2}"
+      end
+  end
+  region_names[region] = image_names
 end
 
-puts list.to_json
+module_hash['components']['image_aws']['attributes']['images']['default'] = region_names
+puts module_hash.to_yaml
 
