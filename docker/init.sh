@@ -6,7 +6,7 @@
 mkdir -p /host_volume/ssh
 
 # Persist RSA keys recieved from Host tenant 
-ln -sf /host_volume/ssh/id_rsa* /root/.ssh/
+ln -sf /host_volume/ssh/id_rsa /root/.ssh/
 
 GIT_PORT=${GIT_PORT-2222}
 if [[ -z $GIT_USERNAME ]]; then
