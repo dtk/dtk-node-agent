@@ -22,6 +22,6 @@ Puppet::Type.type(:r8_export_variable).provide(:default) do
   end
 
   def exists?
-    File.file?("/tmp/dtk_exported_variables")
+    
   end
 end
