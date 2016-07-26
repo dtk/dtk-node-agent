@@ -1,7 +1,8 @@
 {
   "variables": {
     "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_secret_key": "",
+    "ts": "{{timestamp}}"
   },
   "builders": [{
     "name": "precise",
@@ -13,7 +14,7 @@
     "instance_type": "t1.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-precise-{{timestamp}}",
+    "ami_name": "dtk-agent-precise-{{user `ts`}}",
     "ami_groups": ["all"]
   },
 
@@ -27,7 +28,7 @@
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-precise_hvm-{{timestamp}}",
+    "ami_name": "dtk-agent-precise_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
     "subnet_id": "subnet-af44b8d8"
@@ -72,7 +73,7 @@
     "instance_type": "t1.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-trusty-{{timestamp}}",
+    "ami_name": "dtk-agent-trusty-{{user `ts`}}",
     "ami_groups": ["all"]
   },  
 
@@ -86,7 +87,7 @@
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-trusty_hvm-{{timestamp}}",
+    "ami_name": "dtk-agent-trusty_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
     "subnet_id": "subnet-af44b8d8"
@@ -103,7 +104,7 @@
     "ssh_username": "admin",
     "ssh_timeout": "4m",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-wheezy-{{timestamp}}",
+    "ami_name": "dtk-agent-wheezy-{{user `ts`}}",
     "ami_groups": ["all"]
   },
 
@@ -118,7 +119,7 @@
     "ssh_username": "admin",
     "ssh_timeout": "4m",
     
-    "ami_name": "dtk-agent-wheezy_hvm-{{timestamp}}",
+    "ami_name": "dtk-agent-wheezy_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
     "subnet_id": "subnet-af44b8d8"
@@ -136,7 +137,7 @@
     "ssh_timeout": "6m",
     "ssh_pty": true,
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-rhel6-{{timestamp}}",
+    "ami_name": "dtk-agent-rhel6-{{user `ts`}}",
     "ami_groups": ["all"]
   },
 
@@ -152,7 +153,7 @@
     "ssh_timeout": "6m",
     "ssh_pty": true,
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-rhel6_hvm-{{timestamp}}",
+    "ami_name": "dtk-agent-rhel6_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
     "subnet_id": "subnet-af44b8d8"
@@ -170,7 +171,7 @@
     "ssh_timeout": "6m",
     "ssh_pty": true,
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-amazon_hvm-{{timestamp}}",
+    "ami_name": "dtk-agent-amazon_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
     "subnet_id": "subnet-af44b8d8"
@@ -188,7 +189,7 @@
     "ssh_timeout": "6m",
     "ssh_pty": true,
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-amazon-{{timestamp}}",
+    "ami_name": "dtk-agent-amazon-{{user `ts`}}",
     "ami_groups": ["all"]
   }
   ],
