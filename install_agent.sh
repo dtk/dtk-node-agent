@@ -19,6 +19,12 @@ base_dir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # update PATH just in case
 export PATH=$PATH:/sbin:/usr/sbin
 
+# Wait for machiens with cloud-init to finish with boot process
+if [[ -d /var/lib/cloud ]]; then
+  timeout 180 /bin/bash -c \
+  'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo waiting ...; sleep 1; done'
+fi
+
 # check package manager used on the system and install appropriate packages/init scripts
 if [[ `command -v apt-get` ]]; then
 	apt-get update  --fix-missing
