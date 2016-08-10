@@ -170,6 +170,7 @@
     "ssh_username": "ec2-user",
     "ssh_timeout": "6m",
     "ssh_pty": true,
+    "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
     "ami_name": "dtk-agent-amazon_hvm-{{user `ts`}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
