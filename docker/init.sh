@@ -30,9 +30,9 @@ EOF
 fi
 
 # Make sure knonw_hosts is set up correctly
-ssh-keyscan -H ${PUBLIC_ADDRESS} > /tmp/ssh_host.tmp
+ssh-keyscan -p ${GIT_PORT} -H ${PUBLIC_ADDRESS} > /tmp/ssh_host.tmp
 host_key=$(head -1 /tmp/ssh_host.tmp | awk '{print $3}')
-if ! grep -q "$key" ~/.ssh/known_hosts >/dev/null 2>&1; then 
+if ! grep -q "$host_key" ~/.ssh/known_hosts >/dev/null 2>&1; then 
   cat /tmp/ssh_host.tmp >> ~/.ssh/known_hosts
 fi
 rm /tmp/ssh_host.tmp
