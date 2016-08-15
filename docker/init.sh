@@ -6,7 +6,11 @@
 mkdir -p /host_volume/ssh
 
 # Persist RSA keys recieved from Host tenant 
- ln -sf /host_volume/ssh/tenant/id_rsa /root/.ssh/
+ln -sf /host_volume/ssh/tenant/id_rsa /root/.ssh/
+
+# Persist puppet modules dir
+mkdir -p /host_volume/puppet-modules
+ln -sf /host_volume/puppet-modules /usr/share/dtk/ 
 
 GIT_PORT=${GIT_PORT-2222}
 if [[ -z $GIT_USERNAME ]]; then
