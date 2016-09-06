@@ -12,12 +12,15 @@ ln -sf /host_volume/ssh/tenant/id_rsa /root/.ssh/
 mkdir -p /host_volume/puppet-modules
 ln -sf /host_volume/puppet-modules /usr/share/dtk/ 
 
+# Set defaults
 GIT_PORT=${GIT_PORT-2222}
 if [[ -z $GIT_USERNAME ]]; then
   GIT_USERNAME=$USERNAME
 fi
 PBUILDERID=${PBUILDERID-docker-executor}
 PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME-arbiter_remote}
+STOMP_USERNAME=${STOMP_USERNAME-dtk1}
+STOMP_PASSWORD=${STOMP_PASSWORD-marionette}
 
 if [[ "$SKIP_CONFIG" != true ]]; then
 cat << EOF > /etc/dtk/arbiter.cfg
