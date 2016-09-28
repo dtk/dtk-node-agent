@@ -15,7 +15,7 @@ ln -sf /host_volume/puppet-modules /usr/share/dtk/
 # Set defaults
 GIT_PORT=${GIT_PORT-2222}
 if [[ -z $GIT_USERNAME ]]; then
-  GIT_USERNAME=$USERNAME
+  GIT_USERNAME=dtk1
 fi
 PBUILDERID=${PBUILDERID-docker-executor}
 PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME-arbiter_remote}
