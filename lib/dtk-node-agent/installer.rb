@@ -164,14 +164,18 @@ module DTK
             # create puppet group
             shell "groupadd puppet" unless `grep puppet /etc/group`.include? "puppet"
             # create necessary dirs
-            [   '/var/log/puppet/',
+            [ '/var/log/puppet/',
               '/var/lib/puppet/lib/puppet/indirector',
-              '/etc/puppet/modules'
+              '/etc/puppet/modules',
+              '/usr/share/dtk/modules'
               ].map! { |p| FileUtils.mkdir_p(p) unless File.directory?(p) }
             # copy puppet libs
             FileUtils.cp_r(Dir.glob("#{base_dir}/puppet_additions/puppet_lib_base/puppet/indirector/*"), "/var/lib/puppet/lib/puppet/indirector/")
-            # copy r8 puppet module
-            FileUtils.cp_r(Dir.glob("#{base_dir}/puppet_additions/modules/r8"), "/etc/puppet/modules")
+            # copy dtk/r8 puppet module
+            FileUtils.cp_r(Dir.glob("#{base_dir}/puppet_additions/modules/*"), "/usr/share/dtk/modules/")
+            # symlink dtk/r8 puppet module
+            FileUtils.ln_sf("/usr/share/dtk/modules/dtk", "/etc/puppet/modules/")
+            FileUtils.ln_sf("/usr/share/dtk/modules/r8", "/etc/puppet/modules/")
           end
 
           def self.base_dir
