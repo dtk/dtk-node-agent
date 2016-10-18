@@ -206,7 +206,8 @@ module DTK
             shell "bundle install --without development"
             puts "Installing dtk-arbiter init script"
             FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/#{@osfamily}.dtk-arbiter.init", "/etc/init.d/dtk-arbiter")
-            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/systemd.dtk-arbiter.service", "/etc/systemd/system/dtk-arbiter.service") if is_systemd
+            # copy the service file, since systemd doesn't follow symlinks
+            FileUtils.cp("/usr/share/dtk/dtk-arbiter/etc/systemd.dtk-arbiter.service", "/etc/systemd/system/dtk-arbiter.service") if is_systemd
             set_init("dtk-arbiter")
             puts "Installing dtk-arbiter monit config."
             monit_cfg_path = (@osfamily == 'debian') ? "/etc/monit/conf.d" : "/etc/monit.d"
