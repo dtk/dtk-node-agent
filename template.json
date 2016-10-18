@@ -95,59 +95,11 @@
 
   {
     "type": "amazon-ebs",
-    "name": "wheezy",
+    "name": "rhel7_hvm",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
-    "source_ami": "ami-baeda9d2",
-    "instance_type": "t1.micro",
-    "ssh_username": "admin",
-    "ssh_timeout": "4m",
-    "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-wheezy-{{user `ts`}}",
-    "ami_groups": ["all"]
-  },
-
-  {
-    "type": "amazon-ebs",
-    "name": "wheezy_hvm",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
-    "region": "us-east-1",
-    "source_ami": "ami-e0efab88",
-    "instance_type": "t2.micro",
-    "ssh_username": "admin",
-    "ssh_timeout": "4m",
-    
-    "ami_name": "dtk-agent-wheezy_hvm-{{user `ts`}}",
-    "ami_groups": ["all"],
-    "vpc_id": "vpc-5a63bc3f",
-    "subnet_id": "subnet-af44b8d8"
-  },
-  
-  {
-    "type": "amazon-ebs",
-    "name": "rhel6",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
-    "region": "us-east-1",
-    "source_ami": "ami-1332227a",
-    "instance_type": "t1.micro",
-    "ssh_username": "ec2-user",
-    "ssh_timeout": "6m",
-    "ssh_pty": true,
-    "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
-    "ami_name": "dtk-agent-rhel6-{{user `ts`}}",
-    "ami_groups": ["all"]
-  },
-
-  {
-    "type": "amazon-ebs",
-    "name": "rhel6_hvm",
-    "access_key": "{{user `aws_access_key`}}",
-    "secret_key": "{{user `aws_secret_key`}}",
-    "region": "us-east-1",
-    "source_ami": "ami-00a11e68",
+    "source_ami": "ami-2051294a",
     "instance_type": "t2.micro",
     "ssh_username": "ec2-user",
     "ssh_timeout": "6m",
