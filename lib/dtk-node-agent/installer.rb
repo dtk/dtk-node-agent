@@ -182,13 +182,21 @@ module DTK
             File.expand_path('../..', File.dirname(__FILE__))
           end
 
+          def self.is_systemd
+            File.exist?("/etc/systemd/system")
+          end
+
           def self.set_init(script)
             shell "chmod +x /etc/init.d/#{script}"
             if @osfamily == 'debian'
               shell "update-rc.d #{script} defaults"
             elsif @osfamily == 'redhat'
               shell "chkconfig --level 345 #{script} on"
-              shell "systemctl daemon-reload" if @osmajrelease == '7'
+              # in case of a systemd system, reload the daemons
+              if is_systemd
+                shell "systemctl daemon-reload"
+                shell "systemctl enable #{script}.service"
+              end
             end
           end
 
@@ -198,11 +206,12 @@ module DTK
             shell "bundle install --without development"
             puts "Installing dtk-arbiter init script"
             FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/#{@osfamily}.dtk-arbiter.init", "/etc/init.d/dtk-arbiter")
+            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/systemd.dtk-arbiter.service", "/etc/systemd/system/dtk-arbiter.service") if is_systemd
             set_init("dtk-arbiter")
             puts "Installing dtk-arbiter monit config."
             monit_cfg_path = (@osfamily == 'debian') ? "/etc/monit/conf.d" : "/etc/monit.d"
             set_init("monit")
-            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.monit", "#{monit_cfg_path}/dtk-arbiter")            
+            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.monit", "#{monit_cfg_path}/dtk-arbiter") if File.exist?(monit_cfg_path)          
           end
     end
   end
