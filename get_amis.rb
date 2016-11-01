@@ -13,11 +13,11 @@ module_hash = {
   'module' => 'image_aws',
   'dsl_version' => '1.0.0',
   'components' => {
-    'image_aws' => { 
-      'attributes' => { 
-        'images' => { 
-          'description' => 'Mapping of logical image names to amis', 
-          'type' => 'hash', 
+    'image_aws' => {
+      'attributes' => {
+        'images' => {
+          'description' => 'Mapping of logical image names to amis',
+          'type' => 'hash',
           'hidden' => true,
           'default' => {}
         }
@@ -36,6 +36,7 @@ resolver = {
   'wheezy' => 'debian',
 	'wheezy_hvm' => 'debian',
   'rhel6_hvm' => 'redhat',
+  'rhel7_hvm' => 'redhat',
 	'rhel6' => 'redhat',
 	'amazon' => 'amazon-linux',
 	'amazon_hvm' => 'amazon-linux'
@@ -52,10 +53,10 @@ regions.each do |region|
         raise "Missing mapping #{$1}  2: #{$2}" unless resolver[$1.downcase]
         unless $1.include? 'hvm'
           sizes = { 'micro' => "t1.micro", 'small' => "m1.small",'medium' => "m3.medium" }
-        else 
+        else
           if $1 == 'amazon_hvm'
             sizes = { 'large' => "m4.large", 'micro' => "t2.micro", 'small' => "t2.small", 'medium' => "t2.medium" }
-          else  
+          else
             sizes = { 'micro' => "t2.micro", 'small' => "t2.small", 'medium' => "t2.medium" }
           end
         end
