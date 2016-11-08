@@ -70,7 +70,7 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
-    "source_ami": "ami-2e5f0c39",
+    "source_ami": "ami-c2580bd5",
     "instance_type": "t1.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
