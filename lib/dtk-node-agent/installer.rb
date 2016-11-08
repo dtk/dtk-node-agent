@@ -67,6 +67,8 @@ module DTK
               FileUtils.cp("#{base_dir}/src/etc/apt/preferences.d/puppetlabs", "/etc/apt/preferences.d/puppetlabs")
             elsif @osfamily == 'redhat'
               shell "yum -y install yum-utils wget curl"
+              # do a full upgrade
+              shell "yum -y update"
               case @osmajrelease
               when "5"
                 shell "rpm -ivh #{CONFIG[:puppetlabs_el5_rpm_repo]}"
