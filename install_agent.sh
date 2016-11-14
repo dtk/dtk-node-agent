@@ -34,7 +34,7 @@ if [[ `command -v apt-get` ]]; then
 		# add the git core ppa
 		yes | sudo add-apt-repository ppa:git-core/ppa
 		apt-get update
-		wget "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.6.2%2Bfpm0_amd64.deb" -O puppet-omnibus.deb
+		wget "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.8.7%2Bfpm0_amd64.deb" -O puppet-omnibus.deb
     # install backported kernel for docker if on 12.04
     if [[ ${release} == '12.04' ]]; then
       apt-get -y install linux-image-generic-lts-trusty
@@ -62,7 +62,7 @@ elif [[ `command -v yum` ]]; then
 		wget http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.3.2.fpm0-1.x86_64.el5.rpm -O puppet-omnibus.rpm
 	elif [[ ${release:0:1} == 6 ]] || [[ ${release:0:1} == 7 ]] || [[ ${osname} == 'Amazon' ]];then
     # use curl here as a workaround for wget segmentation fault on amazon-linux
-		curl http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.6.2.fpm0-1.x86_64.el6.rpm -o puppet-omnibus.rpm
+		curl http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.8.7.fpm0-1.x86_64.rpm -o puppet-omnibus.rpm
 	fi;
 	yum -y --nogpgcheck localinstall puppet-omnibus.rpm
 	rm -rf puppet-omnibus.rpm
