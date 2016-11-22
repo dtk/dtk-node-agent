@@ -3,7 +3,7 @@ dtk-node-agent
 
 What it is?
 --------------
-Set of scripts that are present in AMIs that serves as basis for nodes that are spun up via DTK. Below is manual usage of these scripts (if you want to install Puppet Omnibus on nodes, burn new AMIs that will be used by DTK) but that step is not necessary for everyday usage of DTK
+Set of scripts that are present in AMIs that serves as basis for nodes that are spun up via Dtk. Below is manual usage of these scripts (if you want to install Puppet Omnibus on nodes, burn new AMIs that will be used by Dtk) but that step is not necessary for everyday usage of Dtk
 
 Manual usage
 --------------
