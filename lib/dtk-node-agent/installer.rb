@@ -203,7 +203,7 @@ module DTK
           end
 
           def self.install_arbiter
-            shell "git clone -b stable https://github.com/dtk/dtk-arbiter /usr/share/dtk/dtk-arbiter"
+            shell "git clone -b DTK-2654 https://github.com/dtk/dtk-arbiter /usr/share/dtk/dtk-arbiter"
             Dir.chdir "/usr/share/dtk/dtk-arbiter"
             shell "bundle install --without development"
             puts "Installing dtk-arbiter init script"
