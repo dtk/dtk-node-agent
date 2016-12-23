@@ -21,11 +21,12 @@ PBUILDERID=${PBUILDERID-docker-executor}
 PRIVATE_KEY_NAME=${PRIVATE_KEY_NAME-arbiter_remote}
 STOMP_USERNAME=${STOMP_USERNAME-dtk1}
 STOMP_PASSWORD=${STOMP_PASSWORD-marionette}
+STOMP_PORT=${STOMP_PORT-6163}
 
 if [[ "$SKIP_CONFIG" != true ]]; then
 cat << EOF > /etc/dtk/arbiter.cfg
 stomp_url = ${PUBLIC_ADDRESS}
-stomp_port = 6163
+stomp_port = ${STOMP_PORT}
 stomp_username = ${STOMP_USERNAME}
 stomp_password = ${STOMP_PASSWORD}
 arbiter_topic = /topic/arbiter.${STOMP_USERNAME}.broadcast
