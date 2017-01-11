@@ -9,8 +9,8 @@ mkdir -p /host_volume/ssh
 ln -sf /host_volume/ssh/tenant/id_rsa /root/.ssh/
 
 # Persist puppet modules dir
-mkdir -p /host_volume/puppet-modules
-ln -sf /host_volume/puppet-modules /usr/share/dtk/ 
+mkdir -p /host_volume/modules
+ln -sf /host_volume/modules /usr/share/dtk/ 
 
 # Set defaults
 GIT_PORT=${GIT_PORT-2222}
