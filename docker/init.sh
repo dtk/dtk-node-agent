@@ -4,9 +4,12 @@
 
 # Make sure ssh directory exists on mounted volume
 mkdir -p /host_volume/ssh
-
 # Persist RSA keys recieved from Host tenant 
-ln -sf /host_volume/ssh/tenant/id_rsa /root/.ssh/
+if [[ ! -L /usr/share/dtk/modules ]]; then
+  mv /usr/share/dtk/modules/* /host_volume/modules/
+  rm -rf /usr/share/dtk/modules/
+  ln -sf /host_volume/modules /usr/share/dtk/
+fi
 
 # Persist puppet modules dir
 mkdir -p /host_volume/modules
