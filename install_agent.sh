@@ -79,7 +79,7 @@ export PATH=/opt/puppet-omnibus/embedded/bin/:/opt/puppet-omnibus/bin/:$PATH
 cd ${base_dir}
 gem uninstall -aIx puppet
 gem build ${base_dir}/dtk-node-agent.gemspec
-gem install posix-spawn -v 0.3.8 --no-rdoc --no-ri
+gem install posix-spawn -v 0.3.13 --no-rdoc --no-ri
 gem install ${base_dir}/dtk-node-agent*.gem --no-rdoc --no-ri
 # run the gem
 dtk-node-agent -d
