@@ -45,7 +45,7 @@ module DTK
         if @osfamily == 'debian'
               # set up apt and install packages
               shell "apt-get update --fix-missing"
-              shell "apt-get install -y build-essential wget curl git"
+              shell "apt-get install -y build-essential wget curl git libicu-dev zlib1g-dev"
               # install upgrades
               Array(CONFIG[:upgrades][:debian]).each do |package|
                 shell "apt-get install -y #{package}"
@@ -66,7 +66,7 @@ module DTK
               # pin down the puppetlabs apt repo
               FileUtils.cp("#{base_dir}/src/etc/apt/preferences.d/puppetlabs", "/etc/apt/preferences.d/puppetlabs")
             elsif @osfamily == 'redhat'
-              shell "yum -y install yum-utils wget curl"
+              shell "yum -y install yum-utils wget curl libicu-devel zlib-devel"
               # do a full upgrade
               shell "yum -y update"
               case @osmajrelease
@@ -112,22 +112,21 @@ module DTK
 
             puts "Installing DTK Arbiter"
             install_arbiter
-          end       
-
+          end
 
           private
-          
+
           def self.parse(argv)
             options = {}
             parser = OptionParser.new do |opts|
               opts.banner = <<-BANNER
               usage:
-              
+
               dtk-node-agent [-p|--puppet-version] [-v|--version]
               BANNER
               opts.on("-d",
                 "--debug",
-                "enable debug mode")  { |v| options[:debug] = true }      
+                "enable debug mode")  { |v| options[:debug] = true }
               opts.on_tail("-v",
                 "--version",
                 "Print the version and exit.") do
@@ -145,7 +144,7 @@ module DTK
             parser.parse!(argv)
 
             options
-            
+
           rescue OptionParser::InvalidOption => e
             $stderr.puts e.message
             exit(12)
@@ -203,7 +202,8 @@ module DTK
           end
 
           def self.install_arbiter
-            shell "git clone -b DTK-2654 https://github.com/dtk/dtk-arbiter /usr/share/dtk/dtk-arbiter"
+            arbiter_branch = CONFIG[:arbiter_branch] || 'stable'
+            shell "git clone -b #{arbiter_branch} https://github.com/dtk/dtk-arbiter /usr/share/dtk/dtk-arbiter"
             Dir.chdir "/usr/share/dtk/dtk-arbiter"
             shell "bundle install --without development"
             puts "Installing dtk-arbiter init script"
@@ -214,7 +214,7 @@ module DTK
             puts "Installing dtk-arbiter monit config."
             monit_cfg_path = (@osfamily == 'debian') ? "/etc/monit/conf.d" : "/etc/monit.d"
             set_init("monit")
-            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.monit", "#{monit_cfg_path}/dtk-arbiter") if File.exist?(monit_cfg_path)          
+            FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.monit", "#{monit_cfg_path}/dtk-arbiter") if File.exist?(monit_cfg_path)
           end
     end
   end
