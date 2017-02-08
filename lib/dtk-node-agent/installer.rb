@@ -214,7 +214,9 @@ module DTK
             puts "Installing dtk-arbiter monit config."
             monit_cfg_path = (@osfamily == 'debian') ? "/etc/monit/conf.d" : "/etc/monit.d"
             set_init("monit")
+            logrotate_cfg_path = "/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.logrotate"
             FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/dtk-arbiter.monit", "#{monit_cfg_path}/dtk-arbiter") if File.exist?(monit_cfg_path)
+            FileUtils.cp(logrotate_cfg_path, "/etc/logrotate.d/dtk-arbiter") if File.exist?(logrotate_cfg_path)
           end
     end
   end
