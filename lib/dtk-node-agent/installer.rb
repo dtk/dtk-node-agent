@@ -47,22 +47,27 @@ module DTK
           shell "apt-get update --fix-missing"
           shell "apt-get install -y build-essential wget curl git libicu-dev zlib1g-dev"
           # install upgrades
-          Array(CONFIG[:upgrades][:debian]).each do |package|
-            shell "apt-get install -y #{package}"
+
+          # don't install utility packages inside docker to save 
+          unless inside_docker?
+            Array(CONFIG[:upgrades][:debian]).each do |package|
+              shell "apt-get install -y #{package}"
+            end
+            # install logstash forwarder
+            logstash_forwarder_url = CONFIG[:logstash_forwarder_deb64]
+            logstash_forwarder_package = logstash_forwarder_url.rpartition('/').last
+            shell "wget #{logstash_forwarder_url}"
+            puts "Installing logstash-forwarder"
+            shell "dpkg -i #{logstash_forwarder_package}"
+            shell "rm #{logstash_forwarder_package}"
           end
           shell "wget http://apt.puppetlabs.com/puppetlabs-release-#{@distcodename}.deb"
           puts "Installing Puppet Labs repository..."
           shell "dpkg -i puppetlabs-release-#{@distcodename}.deb"
           puts "Installing Puppet Labs repository..."
           shell "dpkg -i puppetlabs-release-#{@distcodename}.deb"
-          # install logstash forwarder
-          logstash_forwarder_url = CONFIG[:logstash_forwarder_deb64]
-          logstash_forwarder_package = logstash_forwarder_url.rpartition('/').last
-          shell "wget #{logstash_forwarder_url}"
-          puts "Installing logstash-forwarder"
-          shell "dpkg -i #{logstash_forwarder_package}"
-          shell "apt-get update"
-          shell "rm puppetlabs-release-#{@distcodename}.deb #{logstash_forwarder_package}"
+          #shell "apt-get update"
+          shell "rm puppetlabs-release-#{@distcodename}.deb"
           # pin down the puppetlabs apt repo
           FileUtils.cp("#{base_dir}/src/etc/apt/preferences.d/puppetlabs", "/etc/apt/preferences.d/puppetlabs")
         elsif @osfamily == 'redhat'
@@ -87,9 +92,11 @@ module DTK
           end
           shell "yum -y install git"
           # install upgrades
-          Array(CONFIG[:upgrades][:redhat]).each do |package|
-            shell "yum -y install #{package}"
-            shell "yum -y update #{package}"
+          unless inside_docker?
+            Array(CONFIG[:upgrades][:redhat]).each do |package|
+              shell "yum -y install #{package}"
+              shell "yum -y update #{package}"
+            end
           end
           # install ec2-run-user-data init script
           # but only if the machine is running on AWS
@@ -111,7 +118,7 @@ module DTK
         install_additions
 
         puts "Installing DTK Arbiter"
-        install_arbiter
+        install_arbiter unless @@options[:no_arbiter_install]
 
         puts "Disabling apt-daily service"
         disable_apt_daily if @lsbdistcodename == 'xenial'
@@ -130,6 +137,9 @@ module DTK
           opts.on("-d",
             "--debug",
             "enable debug mode")  { |v| options[:debug] = true }
+          opts.on("-n",
+            "--no-arbiter",
+            "disable arbiter installation")  { |v| options[:no_arbiter_install] = true }
           opts.on_tail("-v",
             "--version",
             "Print the version and exit.") do
@@ -224,6 +234,10 @@ module DTK
 
       def self.disable_apt_daily
         shell "systemctl disable apt-daily.service"
+      end
+
+      def self.inside_docker?
+        File.exist?('/.dockerenv')
       end
 
     end

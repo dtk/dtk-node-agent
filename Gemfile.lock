@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dtk-node-agent (0.10.4)
+    dtk-node-agent (0.10.5)
       bundler
       dtk-action-agent
       facter (~> 2.2.0)

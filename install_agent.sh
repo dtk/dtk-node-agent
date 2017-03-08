@@ -19,6 +19,9 @@ base_dir="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # update PATH just in case
 export PATH=$PATH:/sbin:/usr/sbin
 
+# read the arguments
+args="$*"
+
 # Wait for machiens with cloud-init to finish with boot process
 if [[ -d /var/lib/cloud ]]; then
   timeout 180 /bin/bash -c \
@@ -81,8 +84,13 @@ gem uninstall -aIx puppet
 gem build ${base_dir}/dtk-node-agent.gemspec
 gem install posix-spawn -v 0.3.13 --no-rdoc --no-ri
 gem install ${base_dir}/dtk-node-agent*.gem --no-rdoc --no-ri
+
+if [[ ${args} =~ "--no-arbiter" ]]; then
+  no_arbiter="--no-arbiter"
+fi
+
 # run the gem
-dtk-node-agent -d
+dtk-node-agent -d $no_arbiter
 
 # remove puppet.conf if it exists
 [[ -f /etc/puppet/puppet.conf ]] && rm /etc/puppet/puppet.conf
@@ -103,8 +111,6 @@ rm -f /root/.ssh/known_hosts
 
 # remove puppet logs
 rm -f /var/log/puppet/*
-
-args="$*"
 
 if [[ ${args} =~ "--sanitize" ]]; then
   # sanitize the AMI (creating unique ssh host keys will be handled by the cloud-init package)
