@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dtk-node-agent (0.7.5)
+    dtk-node-agent (0.10.4)
       bundler
       dtk-action-agent
       facter (~> 2.2.0)
@@ -20,7 +20,7 @@ GEM
     CFPropertyList (2.2.8)
     after_do (0.3.1)
     awesome_print (1.1.0)
-    diff-lcs (1.2.5)
+    diff-lcs (1.3)
     dtk-action-agent (0.0.8)
       after_do (= 0.3.1)
       awesome_print (= 1.1.0)
@@ -39,7 +39,7 @@ GEM
     json (1.8.2)
     json_pure (1.8.3)
     mime-types (1.25.1)
-    net-ssh (2.9.2)
+    net-ssh (2.9.4)
     posix-spawn (0.3.8)
     puppet (3.6.2)
       facter (> 1.6, < 3)
@@ -72,4 +72,4 @@ DEPENDENCIES
   dtk-node-agent!
 
 BUNDLED WITH
-   1.10.6
+   1.12.5

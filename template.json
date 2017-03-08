@@ -54,10 +54,10 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
-    "source_ami": "ami-6edd3078",
+    "source_ami": "ami-f4cc1de2",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
-    "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
+
     "ami_name": "dtk-agent-xenial_hvm-{{timestamp}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-5a63bc3f",
