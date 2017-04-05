@@ -16,5 +16,5 @@
 # limitations under the License.
 #
 module DtkNodeAgent
-  VERSION="0.10.5"
+  VERSION="0.10.6"
 end
