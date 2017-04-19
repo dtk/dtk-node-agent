@@ -22,7 +22,7 @@ export PATH=$PATH:/sbin:/usr/sbin
 # read the arguments
 args="$*"
 
-# Wait for machiens with cloud-init to finish with boot process
+# Wait for machines with cloud-init to finish with boot process
 if [[ -d /var/lib/cloud ]]; then
   timeout 180 /bin/bash -c \
   'until stat /var/lib/cloud/instance/boot-finished 2>/dev/null; do echo waiting ...; sleep 1; done'
@@ -36,6 +36,8 @@ if [[ `command -v apt-get` ]]; then
 	if [[ ${osname} == 'Ubuntu' ]]; then
 		# add the git core ppa
 		yes | sudo add-apt-repository ppa:git-core/ppa
+		# add the ruby ppa for releases older than 16.04
+		[[ ${release} != '16.04' ]] && yes | sudo add-apt-repository ppa:brightbox/ruby-ng
 		apt-get update
 		wget "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.8.7%2Bfpm0_amd64.deb" -O puppet-omnibus.deb
     # install backported kernel for docker if on 12.04
@@ -50,7 +52,7 @@ if [[ `command -v apt-get` ]]; then
 		apt-get update
 		apt-get -y install git/squeeze-backports
 	fi;
-	apt-get -y install git
+	apt-get -y install git ruby2.3 ruby2.3-dev
 	# install puppet-omnibus	
 	dpkg --force-overwrite -i puppet-omnibus.deb
 	apt-get -y -f install
@@ -58,7 +60,7 @@ if [[ `command -v apt-get` ]]; then
 elif [[ `command -v yum` ]]; then
 	# install ruby and git
 	yum -y groupinstall "Development Tools"
-	yum -y install ruby rubygems ruby-devel wget redhat-lsb logrotate
+	yum -y install wget redhat-lsb logrotate libyaml
 	# install puppet-omnibus
 	getosinfo
 	if [[ ${release:0:1} == 5 ]]; then
@@ -66,13 +68,26 @@ elif [[ `command -v yum` ]]; then
 	elif [[ ${release:0:1} == 6 ]] || [[ ${release:0:1} == 7 ]] || [[ ${osname} == 'Amazon' ]];then
     # use curl here as a workaround for wget segmentation fault on amazon-linux
 		curl http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.8.7.fpm0-1.x86_64.rpm -o puppet-omnibus.rpm
-	fi;
+	fi
 	yum -y --nogpgcheck localinstall puppet-omnibus.rpm
 	rm -rf puppet-omnibus.rpm
+	# ruby install
+	if [[ ${osname} == 'Amazon' ]]; then
+		# remove all ruby 2.0 packages to prevent conflicts
+		yum -y remove ruby*20*
+		yum -y install ruby23 ruby23-devel
+	elif [[ ${release:0:1} == 7 ]]; then
+		rpm -ivh https://s3.amazonaws.com/dtk-storage/ruby-2.3.4-1.el7.centos.x86_64.rpm
+	fi
 else
 	echo "Unsuported OS for automatic agent installation. Exiting now..."
 	exit 1
 fi;
+
+# install gems for ruby-provider
+gem install grpc --no-rdoc --no-ri
+gem install aws-sdk --no-rdoc --no-ri
+gem install byebug --no-rdoc --no-ri
 
 export PATH=/opt/puppet-omnibus/embedded/bin/:/opt/puppet-omnibus/bin/:$PATH
 
