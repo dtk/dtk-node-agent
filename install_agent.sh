@@ -113,11 +113,11 @@ dtk-node-agent -d $no_arbiter
 [[ ! -f /etc/logrotate.d/puppet ]] && cp ${base_dir}/src/etc/logrotate.d/puppet /etc/logrotate.d/puppet
 
 # install docker
-if [[ ${osname} == 'Amazon' ]];then
-	yum update -y && yum install docker -y;
-else
-  curl -sSL https://get.docker.com/ | sh
-fi
+# if [[ ${osname} == 'Amazon' ]];then
+# 	yum update -y && yum install docker -y;
+# else
+#   curl -sSL https://get.docker.com/ | sh
+# fi
 
 # remove root ssh files
 rm -f /root/.ssh/id_rsa
