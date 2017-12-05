@@ -39,13 +39,13 @@ if [[ `command -v apt-get` ]]; then
 		# add the ruby ppa for releases older than 16.04
 		[[ ${release} != '16.04' ]] && yes | sudo add-apt-repository ppa:brightbox/ruby-ng
 		apt-get update
-		wget "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.8.7%2Bfpm0_amd64.deb" -O puppet-omnibus.deb
+		wget -q "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.8.7%2Bfpm0_amd64.deb" -O puppet-omnibus.deb
     # install backported kernel for docker if on 12.04
     if [[ ${release} == '12.04' ]]; then
       apt-get -y install linux-image-generic-lts-trusty
     fi
 	elif [[ ${osname} == 'Debian' ]]; then
-		wget "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.6.2%2Bfpm0_amd64.debian.deb" -O puppet-omnibus.deb
+		wget -q "http://dtk-storage.s3.amazonaws.com/puppet-omnibus_3.6.2%2Bfpm0_amd64.debian.deb" -O puppet-omnibus.deb
 	fi
 	if [[ ${codename} == 'squeeze' ]]; then
 		echo "deb http://backports.debian.org/debian-backports squeeze-backports main" > /etc/apt/sources.list.d/squeeze-backports.list
@@ -64,7 +64,7 @@ elif [[ `command -v yum` ]]; then
 	# install puppet-omnibus
 	getosinfo
 	if [[ ${release:0:1} == 5 ]]; then
-		wget http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.3.2.fpm0-1.x86_64.el5.rpm -O puppet-omnibus.rpm
+		wget -q http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.3.2.fpm0-1.x86_64.el5.rpm -O puppet-omnibus.rpm
 	elif [[ ${release:0:1} == 6 ]] || [[ ${release:0:1} == 7 ]] || [[ ${osname} == 'Amazon' ]];then
     # use curl here as a workaround for wget segmentation fault on amazon-linux
 		curl http://dtk-storage.s3.amazonaws.com/puppet-omnibus-3.8.7.fpm0-1.x86_64.rpm -o puppet-omnibus.rpm

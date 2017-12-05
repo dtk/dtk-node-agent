@@ -48,20 +48,20 @@ module DTK
           shell "apt-get install -y build-essential wget curl git libicu-dev zlib1g-dev"
           # install upgrades
 
-          # don't install utility packages inside docker to save 
+          # don't install utility packages inside docker to save space
           unless inside_docker?
             Array(CONFIG[:upgrades][:debian]).each do |package|
               shell "apt-get install -y #{package}"
             end
             # install logstash forwarder
-            logstash_forwarder_url = CONFIG[:logstash_forwarder_deb64]
-            logstash_forwarder_package = logstash_forwarder_url.rpartition('/').last
-            shell "wget #{logstash_forwarder_url}"
-            puts "Installing logstash-forwarder"
-            shell "dpkg -i #{logstash_forwarder_package}"
-            shell "rm #{logstash_forwarder_package}"
+            # logstash_forwarder_url = CONFIG[:logstash_forwarder_deb64]
+            # logstash_forwarder_package = logstash_forwarder_url.rpartition('/').last
+            # shell "wget #{logstash_forwarder_url}"
+            # puts "Installing logstash-forwarder"
+            # shell "dpkg -i #{logstash_forwarder_package}"
+            # shell "rm #{logstash_forwarder_package}"
           end
-          shell "wget http://apt.puppetlabs.com/puppetlabs-release-#{@distcodename}.deb"
+          shell "wget -q http://apt.puppetlabs.com/puppetlabs-release-#{@distcodename}.deb"
           puts "Installing Puppet Labs repository..."
           shell "dpkg -i puppetlabs-release-#{@distcodename}.deb"
           puts "Installing Puppet Labs repository..."
@@ -120,8 +120,13 @@ module DTK
         puts "Installing DTK Arbiter"
         install_arbiter unless @@options[:no_arbiter_install]
 
-        puts "Disabling apt-daily service"
-        disable_apt_daily if @lsbdistcodename == 'xenial'
+        if @distcodename == 'xenial'
+          # TO-DO apt-daily.service is set as static after disabling
+          puts "Disabling apt-daily service"
+          disable_apt_daily
+          # override service timer
+          override_apt_daily_timer
+        end
       end
 
       private
@@ -196,20 +201,22 @@ module DTK
         File.expand_path('../..', File.dirname(__FILE__))
       end
 
-      def self.is_systemd
-        File.exist?("/etc/systemd/system")
+      def self.is_systemd?
+        system("pidof systemd > /dev/null")
       end
 
       def self.set_init(script)
-        shell "chmod +x /etc/init.d/#{script}"
-        if @osfamily == 'debian'
-          shell "update-rc.d #{script} defaults"
-        elsif @osfamily == 'redhat'
-          shell "chkconfig --level 345 #{script} on"
+        if is_systemd?
           # in case of a systemd system, reload the daemons
-          if is_systemd
-            shell "systemctl daemon-reload"
-            shell "systemctl enable #{script}.service"
+          shell "systemctl daemon-reload"
+          puts "Enabling systemd #{script}.service"
+          shell "systemctl enable #{script}.service"
+        else
+          shell "chmod +x /etc/init.d/#{script}"
+          if @osfamily == 'debian'
+            shell "update-rc.d #{script} defaults"
+          elsif @osfamily == 'redhat'
+            shell "chkconfig --level 345 #{script} on"
           end
         end
       end
@@ -220,9 +227,12 @@ module DTK
         Dir.chdir "/usr/share/dtk/dtk-arbiter"
         shell "bundle install --without development"
         puts "Installing dtk-arbiter init script"
-        FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/#{@osfamily}.dtk-arbiter.init", "/etc/init.d/dtk-arbiter")
-        # copy the service file, since systemd doesn't follow symlinks
-        FileUtils.cp("/usr/share/dtk/dtk-arbiter/etc/systemd.dtk-arbiter.service", "/etc/systemd/system/dtk-arbiter.service") if is_systemd
+        if is_systemd?
+          # copy the service file, since systemd doesn't follow symlinks
+          FileUtils.cp("/usr/share/dtk/dtk-arbiter/etc/systemd.dtk-arbiter.service", "/etc/systemd/system/dtk-arbiter.service")
+        else
+          FileUtils.ln_sf("/usr/share/dtk/dtk-arbiter/etc/#{@osfamily}.dtk-arbiter.init", "/etc/init.d/dtk-arbiter")
+        end
         set_init("dtk-arbiter")
         puts "Installing dtk-arbiter monit config."
         monit_cfg_path = (@osfamily == 'debian') ? "/etc/monit/conf.d" : "/etc/monit.d"
@@ -234,6 +244,12 @@ module DTK
 
       def self.disable_apt_daily
         shell "systemctl disable apt-daily.service"
+      end
+
+      def self.override_apt_daily_timer
+        timer_dir = '/etc/systemd/system/apt-daily.timer.d/'
+        FileUtils.mkdir_p(timer_dir)
+        FileUtils.cp("#{base_dir}/src/etc/systemd/override.conf", timer_dir)
       end
 
       def self.inside_docker?
