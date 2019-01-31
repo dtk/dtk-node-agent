@@ -24,11 +24,27 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-1",
-    "source_ami": "ami-0f9cf087c1f27d9b1",
+    "source_ami": "ami-09677e0a6b14905b0",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
     "ami_name": "dtk-agent-xenial_hvm-{{timestamp}}",
+    "ami_groups": ["all"],
+    "vpc_id": "vpc-d9946ba0",
+    "subnet_id": "subnet-9cecbfa0"
+  },
+
+  {
+    "name": "bionic_hvm",
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami": "ami-0ac019f4fcb7cb7e6",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_regions": ["us-west-1", "us-west-2", "eu-west-1"],
+    "ami_name": "dtk-agent-bionic_hvm-{{timestamp}}",
     "ami_groups": ["all"],
     "vpc_id": "vpc-d9946ba0",
     "subnet_id": "subnet-9cecbfa0"

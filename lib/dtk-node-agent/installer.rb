@@ -46,7 +46,10 @@ module DTK
           # set up apt and install packages
           shell "apt-get update --fix-missing"
           shell "apt-get install -y build-essential wget curl git libicu-dev zlib1g-dev"
-          # install upgrades
+
+          # disable unattended upgrades
+          `sed -i 's#APT::Periodic::Update-Package-Lists \"1\";#APT::Periodic::Update-Package-Lists \"0\";#g' /etc/apt/apt.conf.d/20auto-upgrades`
+          `sed -i 's#APT::Periodic::Unattended-Upgrade \"1\";#APT::Periodic::Unattended-Upgrade \"0\";#g' /etc/apt/apt.conf.d/20auto-upgrades`
 
           # don't install utility packages inside docker to save space
           unless inside_docker?

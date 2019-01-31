@@ -86,7 +86,9 @@ fi;
 
 # install gems for ruby-provider
 gem install grpc --no-rdoc --no-ri
-gem install aws-sdk --no-rdoc --no-ri
+gem install aws-sdk-iam -v 1.13.0 --no-rdoc --no-ri
+gem install aws-sdk-ec2 -v 1.67.0 --no-rdoc --no-ri
+gem install aws-sdk-kms -v 1.13.0 --no-rdoc --no-ri
 gem install byebug --no-rdoc --no-ri
 
 export PATH=/opt/puppet-omnibus/embedded/bin/:/opt/puppet-omnibus/bin/:$PATH
